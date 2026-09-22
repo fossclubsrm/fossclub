@@ -142,7 +142,7 @@ export function InteractiveTerminal({ isOpen, onClose }: { isOpen: boolean; onCl
               <p><span className="text-cyan-400 font-bold">parent</span>: FOSS United Foundation</p>
               <p><span className="text-yellow-400 font-bold">kernel</span>: Linux 6.10.x-foss-srm</p>
               <p><span className="text-purple-400 font-bold">domains</span>: Technical | Corporate | Creative</p>
-              <p><span className="text-emerald-400 font-bold">ranks</span>: Head &gt; Maintainer &gt; Volunteer</p>
+              <p><span className="text-emerald-400 font-bold">ranks</span>: Head &gt; Co-Head &gt; Maintainer &gt; Volunteer</p>
               <p><span className="text-cyan-400 font-bold">uptime</span>: 3+ academic cycles</p>
               <p className="flex items-center gap-1.5"><span className="text-gray-400 font-bold">status</span>: <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse" /> Active Open Source Node</p>
             </div>

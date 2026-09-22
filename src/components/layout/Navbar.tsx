@@ -18,8 +18,8 @@ export default function Navbar() {
   return (
     <PillNav
       logo="/images/logo-transparent.png"
-      logoAlt="FOSS Club SRM"
-      brandText="FOSS Club SRM"
+logoAlt="FOSS Club SRM KTR"
+      brandText="FOSS Club SRM KTR"
       items={navItems}
     />
   );

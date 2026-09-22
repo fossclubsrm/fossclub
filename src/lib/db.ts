@@ -151,7 +151,7 @@ export async function saveTeamMember(member: Partial<TeamMember> & { name: strin
     name: member.name,
     imageUrl: member.imageUrl || "",
     domain: member.domain || "Technical",
-    caption: member.caption || "FOSS Contributor",
+    caption: member.caption,
     github: member.github || "",
     linkedin: member.linkedin || "",
     instagram: member.instagram || "",

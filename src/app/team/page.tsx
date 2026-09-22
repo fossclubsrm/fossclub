@@ -34,14 +34,22 @@ const DOMAIN_META: Record<string, { color: string; bg: string; border: string }>
   Creative:  { color: "#fb7185", bg: "rgba(251, 113, 133, 0.15)", border: "rgba(251, 113, 133, 0.35)" },
 };
 
-const POSITION_ORDER = ["Head", "Maintainer", "Volunteer"];
+const POSITION_ORDER = ["Head", "co-head", "Maintainer", "Volunteer"];
+// Positions that fall under the "HEADS" umbrella (filter/group them together)
+const HEADS_POSITIONS = ["Head", "co-head"];
 const DOMAIN_PRIORITY_ORDER = ["Technical", "Corporate", "Creative"];
 
-// Frontend-only display label. DB/logic keep the raw position name ("Head").
-const POSITION_LABEL = (p: string) => (p === "Head" ? "CLUB HEAD" : p);
+// Frontend-only display label. DB/logic keep the raw position name ("Head", "co-head").
+const POSITION_LABEL = (p: string) =>
+  p === "Head" ? "HEADS" : p === "co-head" ? "CO-HEAD" : p;
+
+// Per-card badge label: singular "CLUB HEAD" on name cards (section header stays "HEADS").
+const CARD_LABEL = (p: string) =>
+  p === "Head" ? "CLUB HEAD" : p === "co-head" ? "CO-HEAD" : p;
 
 const POSITION_BADGE: Record<string, { color: string; bg: string; border: string }> = {
   "Head":       { color: "#f59e0b", bg: "rgba(245, 158, 11, 0.12)", border: "rgba(245, 158, 11, 0.3)" },
+  "co-head":    { color: "#f59e0b", bg: "rgba(245, 158, 11, 0.12)", border: "rgba(245, 158, 11, 0.3)" },
   "Maintainer": { color: "#d946ef", bg: "rgba(217, 70, 239, 0.12)", border: "rgba(217, 70, 239, 0.3)" },
   "Volunteer":  { color: "#a1a1aa", bg: "rgba(255, 255, 255, 0.05)", border: "rgba(255, 255, 255, 0.1)" },
 };
@@ -117,7 +125,7 @@ function LiquidGlassMemberCard({
                   borderColor: pb.border,
                 }}
               >
-                <span>{POSITION_LABEL(position)}</span>
+                <span>{CARD_LABEL(position)}</span>
               </span>
 
               {/* Box 2: Domain */}
@@ -278,9 +286,10 @@ export default function TeamPage() {
         return { member: m, position: resolvedPosition };
       })
       .filter((item) => {
-        // Position filter
-        if (filterPosition !== "All" && item.position !== filterPosition) {
-          return false;
+        // Position filter ("Head" umbrella includes "co-head")
+        if (filterPosition !== "All") {
+          if (filterPosition === "Head" && HEADS_POSITIONS.includes(item.position)) return true;
+          if (item.position !== filterPosition) return false;
         }
         return true;
       })
@@ -316,12 +325,16 @@ export default function TeamPage() {
       });
   }, [members, filterDomain, filterYear, filterPosition]);
 
-  /* Group by hierarchy: Head -> Maintainer -> Volunteer */
+  /* Group by hierarchy: Head + co-head (HEADS) -> Maintainer -> Volunteer */
   const groupedHierarchy = useMemo(() => {
     const groups: Record<string, { member: TeamMember; position: string }[]> = {};
     POSITION_ORDER.forEach((pos) => {
+      // co-head members are grouped under the HEADS section alongside Head
+      const groupKey = pos === "co-head" ? "Head" : pos;
       const matching = displayList.filter((item) => item.position === pos);
-      if (matching.length > 0) groups[pos] = matching;
+      if (matching.length > 0) {
+        groups[groupKey] = [...(groups[groupKey] || []), ...matching];
+      }
     });
 
     // Handle any custom positions
@@ -450,7 +463,7 @@ export default function TeamPage() {
               <span className="uppercase tracking-wider">Rank:</span>
             </span>
 
-            {/* Head Button */}
+            {/* Heads Button (Head + Co-Head) */}
             <button
               type="button"
               onClick={() => {
@@ -462,9 +475,9 @@ export default function TeamPage() {
                   ? "border border-amber-400 text-amber-300 bg-amber-500/25 shadow-[0_0_18px_rgba(245,158,11,0.4)] ring-1 ring-amber-400/60"
                   : "border border-amber-500/30 text-amber-400/90 bg-amber-500/10 hover:bg-amber-500/20 hover:border-amber-500/60 hover:text-amber-300"
               }`}
-              title={filterPosition === "Head" ? "Filtered by Head — Click to see all ranks" : "Click to filter by Head"}
+              title={filterPosition === "Head" ? "Filtered by Heads — Click to see all ranks" : "Click to filter by Heads (Head & Co-Head)"}
             >
-              <span>CLUB HEAD</span>
+              <span>HEADS</span>
               {filterPosition === "Head" && <X className="w-3 h-3 ml-0.5 text-amber-300 shrink-0" />}
             </button>
 
@@ -541,7 +554,7 @@ export default function TeamPage() {
               {members.length === 0
                 ? "No team members recorded yet. Add members via CMS."
                 : filterPosition !== "All"
-                ? `No ${filterPosition} members recorded for year ${filterYear}${filterDomain !== "All" ? ` in ${filterDomain} domain` : ""}.`
+                ? `No ${POSITION_LABEL(filterPosition)} members recorded for year ${filterYear}${filterDomain !== "All" ? ` in ${filterDomain} domain` : ""}.`
                 : `No members recorded for year ${filterYear}.`}
             </p>
             {(filterPosition !== "All" || filterDomain !== "All") && (
