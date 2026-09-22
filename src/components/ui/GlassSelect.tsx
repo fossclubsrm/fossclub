@@ -31,9 +31,22 @@ export function GlassSelect({
   disabled = false,
 }: GlassSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const selectedOption = options.find((opt) => opt.value === value);
+
+  // Auto-flip the dropdown upward when there isn't enough space below the trigger
+  useEffect(() => {
+    if (!isOpen) return;
+    const button = buttonRef.current;
+    if (!button) return;
+    const rect = button.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const menuHeight = 260;
+    setOpenUp(spaceBelow < menuHeight && rect.top > spaceBelow);
+  }, [isOpen]);
 
   // Close when clicking outside
   useEffect(() => {
@@ -75,6 +88,7 @@ export function GlassSelect({
     <div ref={containerRef} className={`relative w-full ${className}`}>
       {/* Trigger Button */}
       <button
+        ref={buttonRef}
         type="button"
         disabled={disabled}
         onClick={toggleOpen}
@@ -119,11 +133,13 @@ export function GlassSelect({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            initial={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            exit={{ opacity: 0, y: openUp ? 6 : -6, scale: 0.97 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute left-0 right-0 top-full mt-1.5 z-[100] rounded-2xl overflow-hidden p-1.5 bg-[#090e18]/95 border border-white/25 shadow-[0_20px_50px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.3)] backdrop-blur-2xl"
+            className={`absolute left-0 right-0 z-[100] rounded-2xl overflow-hidden p-1.5 bg-[#090e18]/95 border border-white/25 shadow-[0_20px_50px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.3)] backdrop-blur-2xl ${
+              openUp ? "bottom-full mb-1.5" : "top-full mt-1.5"
+            }`}
           >
             {/* Top catch light */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none" />

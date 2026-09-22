@@ -27,7 +27,7 @@ The **FOSS Club SRM Web Platform** is an immersive, high-performance web experie
 ### 👥 Team Hierarchy & Archive (`/team`)
 - **Multi-Year Position Tracking**: Tracks club members across years (e.g., Volunteer in 2024-25 → Maintainer in 2025-26).
 - **Domain Segmentation**: Filter across **Technical**, **Corporate**, and **Creative** domains.
-- **Rank Hierarchy**: Visual hierarchy ordering (**Head** > **Maintainer** > **Volunteer**).
+- **Rank Hierarchy**: Visual hierarchy ordering (**Head** > **Co-Head** > **Maintainer** > **Volunteer**).
 - **Direct Socials**: Verified LinkedIn, Instagram, and GitHub profiles.
 
 ### 📅 Events Hub (`/events`)

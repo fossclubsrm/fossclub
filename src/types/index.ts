@@ -2,6 +2,7 @@ export type DomainType = "Technical" | "Corporate" | "Creative";
 
 export type ClubPosition = 
   | "Head" 
+  | "co-head"
   | "Maintainer" 
   | "Volunteer";
 

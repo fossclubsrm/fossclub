@@ -14,7 +14,8 @@ import { notifySessionExpired } from "@/lib/authClient";
 
 const DOMAINS: DomainType[] = ["Technical", "Corporate", "Creative"];
 const DOMAIN_PRIORITY_ORDER: DomainType[] = ["Technical", "Corporate", "Creative"];
-const POSITIONS = ["Head", "Maintainer", "Volunteer"];
+const POSITIONS = ["Head", "co-head", "Maintainer", "Volunteer"];
+const positionLabel = (p: string) => (p === "co-head" ? "CO-HEAD" : p);
 
 const DOMAIN_META: Record<string, { color: string; bg: string; border: string }> = {
   Technical: { color: "#22c55e", bg: "#0c2317", border: "#14532d" },
@@ -386,9 +387,6 @@ export function CMSTeamManager() {
                         >
                           {member.domain}
                         </span>
-                        {member.caption && (
-                          <span className="text-[10px] text-gray-400 truncate">{member.caption}</span>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -398,7 +396,7 @@ export function CMSTeamManager() {
                     <div className="flex flex-wrap gap-1.5 pt-0.5">
                       {member.statusHistory.map((h, i) => (
                         <span key={i} className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[10px] text-zinc-300 font-mono">
-                          {h.position} <span className="text-zinc-500">({h.year})</span>
+                          {positionLabel(h.position)} <span className="text-zinc-500">({h.year})</span>
                         </span>
                       ))}
                     </div>
@@ -485,9 +483,6 @@ export function CMSTeamManager() {
                                   </span>
                                 )}
                               </div>
-                              {member.caption && (
-                                <p className="text-[11px] text-gray-400 truncate max-w-xs">{member.caption}</p>
-                              )}
                             </div>
                           </div>
                         </td>
@@ -512,7 +507,7 @@ export function CMSTeamManager() {
                           <div className="flex flex-wrap gap-1.5">
                             {member.statusHistory?.map((h, i) => (
                               <span key={i} className="px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-[10px] text-zinc-300 font-mono">
-                                {h.position} <span className="text-zinc-500">({h.year})</span>
+                                {positionLabel(h.position)} <span className="text-zinc-500">({h.year})</span>
                               </span>
                             ))}
                           </div>
@@ -716,6 +711,7 @@ export function CMSTeamManager() {
                               onChange={(val) => handleStatusChange(idx, "position", val)}
                               options={[
                                 { value: "Head", label: "Head", color: "#f59e0b" },
+                                { value: "co-head", label: "CO-HEAD", color: "#f59e0b" },
                                 { value: "Maintainer", label: "Maintainer", color: "#d946ef" },
                                 { value: "Volunteer", label: "Volunteer", color: "#a1a1aa" },
                               ]}
